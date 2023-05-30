@@ -1,14 +1,18 @@
-﻿using System;
+﻿using DriverSNT2_L.IniData.Logger;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DriverSNT2_L.ComPort
 {
     internal class CommunicationManager
     {
+        static LogWriter logWriter = new LogWriter();
+
         public enum TransmissionType { Text, Hex }
 
         //property variables
@@ -142,7 +146,9 @@ namespace DriverSNT2_L.ComPort
             }
             catch (Exception ex)
             {
-                ConsoleColorOutputError("Не удалось открыть COM-Порт!", ex);
+                string error = "Не удалось открыть COM-Порт! \n" + ex;
+                ConsoleColorOutputError(error, ex);
+                logWriter.WriteError(error + ex);
                 return false;
             }
         }
@@ -163,11 +169,15 @@ namespace DriverSNT2_L.ComPort
                 }
                 Console.WriteLine(("Закрытие COM-порта: " + comPort.PortName));
                 Console.WriteLine("COM-порт закрыт в |" + DateTime.Now + "|\n");
+                logWriter.WriteInformation("COM-порт закрыт в |" + DateTime.Now + "|\n");
+                logWriter.WriteError("COM-порт закрыт в |" + DateTime.Now + "|\n");
                 return true;
             }
             catch (Exception ex)
             {
-                ConsoleColorOutputError("Не удалось корректно закрыть COM-Порт!", ex);
+                string error = "Не удалось корректно закрыть COM-Порт! \n" + ex;
+                ConsoleColorOutputError(error, ex);
+                logWriter.WriteError(error + ex);
                 return false;
             }
         }
@@ -191,7 +201,9 @@ namespace DriverSNT2_L.ComPort
             }
             catch (Exception ex)
             {
-                ConsoleColorOutputError("Ошибка конвертации полученной строки в массив байтов!", ex);
+                string error = "Ошибка конвертации полученной строки в массив байтов! \n";
+                ConsoleColorOutputError(error, ex);
+                logWriter.WriteError(error + ex);
                 //протетсировать данноое возвращение!!!!!!!!!!!! Возможно наличие багов.
                 throw;
             }
@@ -216,7 +228,9 @@ namespace DriverSNT2_L.ComPort
             }
             catch (Exception ex)
             {
-                ConsoleColorOutputError("Ошибка конвертации массива байт в строку-hex!", ex);
+                string error = "Ошибка конвертации массива байт в строку-hex! \n";
+                ConsoleColorOutputError(error, ex);
+                logWriter.WriteError(error + ex);
                 return string.Empty; 
             }
         }
@@ -248,7 +262,9 @@ namespace DriverSNT2_L.ComPort
                 }
                 catch (Exception ex)
                 {
-                    ConsoleColorOutputError("Ошибка чтения с COM-порта.!", ex);
+                    string error = "Ошибка чтения с COM-порта.! \n";
+                    ConsoleColorOutputError(error, ex);
+                    logWriter.WriteError(error + ex);
                 }
             }
             else
@@ -276,7 +292,9 @@ namespace DriverSNT2_L.ComPort
             }
             catch (FormatException ex)
             {
-                ConsoleColorOutputError("Ошибка отправки hex - сообщения счетчику: ", ex);
+                string error = "Ошибка отправки hex - сообщения счетчику: \n";
+                ConsoleColorOutputError(error, ex);
+                logWriter.WriteError(error + ex);
                 byte[] newMsg = HexToByte(msg);
                 Console.WriteLine(ByteToHex(newMsg) + "\n\n");
             }

@@ -9,6 +9,7 @@ namespace DriverSNT2_L.IniData.Logger
 {
     internal class LogWriter
     {
+        string pathLogData = @ConfigurationManager.AppSettings["pathLogData"] + DateTime.Now.ToString("dd_MM_yyyy");
         string pathLogInformaiion = @ConfigurationManager.AppSettings["pathLogInfo"] + DateTime.Now.ToString("dd_MM_yyyy");
 
         bool tempBoolLogData;
@@ -17,6 +18,10 @@ namespace DriverSNT2_L.IniData.Logger
 
         public LogWriter()
         {
+            if (!Directory.Exists(@ConfigurationManager.AppSettings["pathLogData"]))
+            {
+                Directory.CreateDirectory(@ConfigurationManager.AppSettings["pathLogData"]);
+            }
             if (!Directory.Exists(@ConfigurationManager.AppSettings["pathLogInfo"]))
             {
                 Directory.CreateDirectory(@ConfigurationManager.AppSettings["pathLogInfo"]);
@@ -37,8 +42,7 @@ namespace DriverSNT2_L.IniData.Logger
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка чтения config.ini файла!\n" + ex,
-                                "Ошибка !");
+                Console.WriteLine("Ошибка чтения config.ini файла при логировании!\n" + ex);
             }
         }
 

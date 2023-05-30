@@ -2,6 +2,7 @@
 using DriverSNT2_L.Context;
 using DriverSNT2_L.DataControl;
 using DriverSNT2_L.IniData;
+using DriverSNT2_L.IniData.Logger;
 using DriverSNT2_L.Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -29,11 +30,14 @@ namespace DriverSNT2_L
         //--------------------------
         static CommunicationManager comm = new CommunicationManager();
         static SendMessage sendMsg = new SendMessage();
+        static LogWriter logWriter = new LogWriter();
         static ProjectObject? projectObject = new ProjectObject();
         static Dictionary<int, List<int>> dictionary = new Dictionary<int, List<int>>();
+        
 
         static void Main(string[] args)
         {
+            
             InitializationDB(sendMsg.CountNumberCounter);
             #region Цикл опроса счетчика.
             for (int i = 0; i < sendMsg.CountNumberCounter; i++)
@@ -46,7 +50,7 @@ namespace DriverSNT2_L
                 Console.WriteLine("\n");
             }
 
-            int countReadData = 0;
+            int countReadData = 1;
             ParamFromConfiguration_Load();
             OpenComPort();
 
@@ -71,6 +75,7 @@ namespace DriverSNT2_L
                             {
                                 countReadData++;
                                 OutputConsole_Error($"Повторный запрос на чтение данных со счетчика №{i}");
+                                //logWriter.WriteError($"Повторный запрос на чтение данных со счетчика №{i}");
                                 //Console.WriteLine($"Повторный запрос на чтение данных со счетчика №{i}");
                             }
                             else
@@ -105,6 +110,7 @@ namespace DriverSNT2_L
                             {
                                 countReadData++;
                                 OutputConsole_Error($"Повторный запрос на чтение данных со счетчика №{i}");
+                                //logWriter.WriteError($"Повторный запрос на чтение данных со счетчика №{i}");
                                 //Console.WriteLine($"Повторный запрос на чтение данных со счетчика №{i}");
                             }
                             else
@@ -136,11 +142,12 @@ namespace DriverSNT2_L
                 temp_Parity = INI.ReadINI("COMportSettings", "Parity");
                 temp_StopBits = INI.ReadINI("COMportSettings", "StopBits");
                 temp_DataBits = INI.ReadINI("COMportSettings", "DataBits");
+
+                logWriter.LoadFlagLog();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Ошибка чтения config.ini файла!\n" + ex,
-                                "Ошибка !");
+                Console.WriteLine("Ошибка чтения config.ini файла!\n" + ex);
             }
         }
 
@@ -155,13 +162,15 @@ namespace DriverSNT2_L
             comm.OpenPort();
             if (comm.ComPortIsOpen())
             {
-
-                Console.WriteLine("Параметры COM-порта:\n" +
+                string info = "Параметры COM-порта:\n" +
                      "Четность: " + temp_Parity + "\n" +
                      "Стоповые биты: " + temp_StopBits + "\n" +
                      "Биты данных: " + temp_DataBits + "\n" +
                      "Бит в секунду: " + temp_BaudRate + "\n" +
-                     "Таймаут: " + timeoutRead + "\n");
+                     "Таймаут: " + timeoutRead + "\n";
+
+                Console.WriteLine(info);
+                logWriter.WriteInformation(info);
             }
         }
 
@@ -217,7 +226,9 @@ namespace DriverSNT2_L
             }
             else
             {
-                OutputConsole_Error("Контрольная сумма не совпадает!");
+                string info = "Контрольная сумма не совпадает!";
+                OutputConsole_Error(info);
+                //logWriter.WriteError(info);
                 //Console.BackgroundColor = ConsoleColor.Red;
                 //Console.ForegroundColor = ConsoleColor.Black;
                 //Console.Write("Контрольная сумма не совпадает!");
@@ -299,9 +310,11 @@ namespace DriverSNT2_L
                 }
                 else
                 {
+                    string error = $"Количество накопительных ошибок: {errorCount} из 10";
                     errorCount++;
                     OutputConsole_Error("\n\nНе получены данные со счетчика!\n\n");
-                    Console.WriteLine($"Количество накопительных ошибок: {errorCount} из 10");
+                    Console.WriteLine(error);
+                    logWriter.WriteError($"Не получены данные со счетчика!\t" + error);
                     //Console.WriteLine("\n\nНе получены данные со счетчика!\n\n");
                 }
             }            
@@ -389,8 +402,10 @@ namespace DriverSNT2_L
                 else
                 {
                     errorCount++;
+                    string error = $"Количество накопительных ошибок: {errorCount} из 10";
                     OutputConsole_Error("\n\nНе получены данные со счетчика!\n\n");
-                    Console.WriteLine($"Количество накопительных ошибок: {errorCount} из 10");
+                    Console.WriteLine(error);
+                    logWriter.WriteError($"Не получены данные со счетчика!\t" + error);
                     //Console.WriteLine("\n\nНе получены данные со счетчика!\n\n\n");
                 }
             }            
@@ -451,7 +466,9 @@ namespace DriverSNT2_L
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Косяк в отправке выполнения процедур с данными памяти RTC!\n" + ex);
+                string error = $"Косяк в отправке выполнения процедур с данными памяти RTC!\n" + ex;
+                Console.WriteLine(error);
+                logWriter.WriteError(error);
             }            
         }
         // Метод передачи данных NV-памяти в БД
@@ -534,7 +551,9 @@ namespace DriverSNT2_L
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Косяк в отправке выполнения процедур с данными памяти RTC!\n" + ex);
+                string error = $"Косяк в отправке выполнения процедур с данными памяти RTC!\n" + ex;
+                Console.WriteLine(error);
+                logWriter.WriteError(error);
             }
         }
         // Вызов процедуры с параметрами 'id', 'value', 'date'.
@@ -653,7 +672,9 @@ namespace DriverSNT2_L
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка инициализации словаря Id-шников.\n" + ex);
+                    string error = $"Ошибка инициализации словаря Id-шников.\n" + ex;
+                    Console.WriteLine(error);
+                    logWriter.WriteError(error);
                 }
             };
         }
