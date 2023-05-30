@@ -58,6 +58,7 @@ namespace DriverSNT2_L
             {
                 for (int i = 0; i < sendMsg.CountNumberCounter; i++)
                 {
+                    countReadData = 0;
                     do
                     {
                         try
@@ -81,7 +82,7 @@ namespace DriverSNT2_L
                             else
                             {   //Начало опроса.
                                 countReadData = 0;
-                                FillingAnObject_RTC(i+1);                                
+                                FillingAnObject_RTC(i + 1);
                             }
                         }
                         catch (Exception ex)
@@ -91,8 +92,9 @@ namespace DriverSNT2_L
                             continue;
                         }
                     }
-                    while (!checkSumCRC || countReadData == 3);
+                    while (!checkSumCRC && countReadData < 3);
 
+                    countReadData = 0;
                     do
                     {
                         try
@@ -116,7 +118,7 @@ namespace DriverSNT2_L
                             else
                             {   //Начало опроса.
                                 countReadData = 0;
-                                FillingAnObject_NV(i+1);
+                                FillingAnObject_NV(i + 1);
                             }
                         }
                         catch (Exception ex)
@@ -125,7 +127,7 @@ namespace DriverSNT2_L
                             continue;
                         }
                     }
-                    while (!checkSumCRC || countReadData == 3);
+                    while (!checkSumCRC && countReadData < 3);
                 }
             }
             #endregion
