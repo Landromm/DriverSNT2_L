@@ -18,6 +18,7 @@ namespace DriverSNT2_L
         static int timeoutRead = 1000;
         static int okResultProcedure = 0;
         static int errorCount = 0;
+        static int limitErrorCom = 0;
         //--------------------------
         static string? temp_PortName;
         static string? temp_BaudRate;
@@ -50,7 +51,7 @@ namespace DriverSNT2_L
                 Console.WriteLine("\n");
             }
 
-            int countReadData = 1;
+            int countReadData = 0;
             ParamFromConfiguration_Load();
             OpenComPort();
 
@@ -67,7 +68,7 @@ namespace DriverSNT2_L
                             Thread.Sleep(timeoutSend);
                             WriteDataRTC(sendMsg.SendWritePage128Hex[i], sendMsg.SendReadDataHex[i]);
 
-                            Console.WriteLine($"\nЧтение данных RTC со счетчика №{i} - Зав.№ {sendMsg.NumbersCounters[i]}".ToUpper());
+                            Console.WriteLine($"\nЧтение данных RTC со счетчика №{i+1} - Зав.№ {sendMsg.NumbersCounters[i]}".ToUpper());
 
                             if (comm.DataByteList.Count != 0)
                                 checkSumCRC = CheckSumCRC(comm.DataByteList);
@@ -75,14 +76,14 @@ namespace DriverSNT2_L
                             if (!checkSumCRC)
                             {
                                 countReadData++;
-                                OutputConsole_Error($"Повторный запрос на чтение данных со счетчика №{i}");
+                                OutputConsole_Error($"Повторный запрос на чтение данных со счетчика №{i+1}");
                                 //logWriter.WriteError($"Повторный запрос на чтение данных со счетчика №{i}");
                                 //Console.WriteLine($"Повторный запрос на чтение данных со счетчика №{i}");
                             }
                             else
                             {   //Начало опроса.
                                 countReadData = 0;
-                                FillingAnObject_RTC(i + 1);
+                                FillingAnObject_RTC(i+1);                                
                             }
                         }
                         catch (Exception ex)
@@ -93,7 +94,7 @@ namespace DriverSNT2_L
                         }
                     }
                     while (!checkSumCRC && countReadData < 3);
-
+                    
                     countReadData = 0;
                     do
                     {
@@ -103,7 +104,7 @@ namespace DriverSNT2_L
                             Thread.Sleep(timeoutSend);
                             WriteDataNV(sendMsg.SendWritePage256Hex[i], sendMsg.SendReadDataHex[i]);
 
-                            Console.WriteLine($"\nЧтение данных NV со счетчика №{i} - Зав.№ {sendMsg.NumbersCounters[i]}".ToUpper());
+                            Console.WriteLine($"\nЧтение данных NV со счетчика №{i+1} - Зав.№ {sendMsg.NumbersCounters[i]}".ToUpper());
 
                             if (comm.DataByteList.Count != 0)
                                 checkSumCRC = CheckSumCRC(comm.DataByteList);
@@ -111,14 +112,14 @@ namespace DriverSNT2_L
                             if (!checkSumCRC)
                             {
                                 countReadData++;
-                                OutputConsole_Error($"Повторный запрос на чтение данных со счетчика №{i}");
+                                OutputConsole_Error($"Повторный запрос на чтение данных со счетчика №{i+1}");
                                 //logWriter.WriteError($"Повторный запрос на чтение данных со счетчика №{i}");
                                 //Console.WriteLine($"Повторный запрос на чтение данных со счетчика №{i}");
                             }
                             else
                             {   //Начало опроса.
                                 countReadData = 0;
-                                FillingAnObject_NV(i + 1);
+                                FillingAnObject_NV(i+1);
                             }
                         }
                         catch (Exception ex)
@@ -144,6 +145,8 @@ namespace DriverSNT2_L
                 temp_Parity = INI.ReadINI("COMportSettings", "Parity");
                 temp_StopBits = INI.ReadINI("COMportSettings", "StopBits");
                 temp_DataBits = INI.ReadINI("COMportSettings", "DataBits");
+                timeoutRead = Convert.ToInt32(INI.ReadINI("COMportSettings", "Timeout"));
+                limitErrorCom = Convert.ToInt32(INI.ReadINI("SNTConfig", "LimitErrorCom"));
 
                 logWriter.LoadFlagLog();
             }
@@ -276,7 +279,7 @@ namespace DriverSNT2_L
                 data_RTC.LevelSignalU1Channel2 = FormatData(48..49);
                 data_RTC.LevelSignalU2Channel2 = FormatData(47..48);
                 data_RTC.LevelSignalU3Channel2 = FormatData(46..47);
-                data_RTC.Instraction = FormatData(62..63);
+                data_RTC.ErrorConection = "0"; //Переопределен как ошибка связи со счетчиком.
                 data_RTC.ErrorChannel1 = FormatData(63..64);
                 data_RTC.ErrorChannel2 = FormatData(64..65);
                 data_RTC.ErrorSystem = FormatData(65..66);
@@ -304,7 +307,7 @@ namespace DriverSNT2_L
             }
             catch (Exception ex)
             {
-                if (errorCount >= 10)
+                if (errorCount >= limitErrorCom)
                 {
                     errorCount = 0;
                     comm.ClosePort();
@@ -312,12 +315,16 @@ namespace DriverSNT2_L
                 }
                 else
                 {
-                    string error = $"Количество накопительных ошибок: {errorCount} из 10";
                     errorCount++;
+                    string error = $"Количество накопительных ошибок: {errorCount} из {limitErrorCom}";
                     OutputConsole_Error("\n\nНе получены данные со счетчика!\n\n");
                     Console.WriteLine(error);
                     logWriter.WriteError($"Не получены данные со счетчика!\t" + error);
-                    //Console.WriteLine("\n\nНе получены данные со счетчика!\n\n");
+
+                    using (var context = new DataContext())
+                    {
+                        GetSqlProcedure(context, dictionary[indexCount][11], "1", DateTime.Now);
+                    }
                 }
             }            
         }
@@ -395,7 +402,7 @@ namespace DriverSNT2_L
             }
             catch (Exception ex)
             {
-                if (errorCount >= 10)
+                if (errorCount >= limitErrorCom)
                 {
                     errorCount = 0;
                     comm.ClosePort();
@@ -404,11 +411,15 @@ namespace DriverSNT2_L
                 else
                 {
                     errorCount++;
-                    string error = $"Количество накопительных ошибок: {errorCount} из 10";
+                    string error = $"Количество накопительных ошибок: {errorCount} из {limitErrorCom}";
                     OutputConsole_Error("\n\nНе получены данные со счетчика!\n\n");
                     Console.WriteLine(error);
-                    logWriter.WriteError($"Не получены данные со счетчика!\t" + error);
-                    //Console.WriteLine("\n\nНе получены данные со счетчика!\n\n\n");
+                    logWriter.WriteError($"Не получены данные со счетчика!\t\n {error}" + ex);
+                    
+                    using (var context = new DataContext())
+                    {
+                        GetSqlProcedure(context, dictionary[indexCount][11], "1", DateTime.Now);
+                    }
                 }
             }            
         }
@@ -432,7 +443,7 @@ namespace DriverSNT2_L
                     GetSqlProcedure(context, dictionary[indexCount][8], data_RTC.LevelSignalU1Channel2, data_RTC.DateTimes);
                     GetSqlProcedure(context, dictionary[indexCount][9], data_RTC.LevelSignalU2Channel2, data_RTC.DateTimes);
                     GetSqlProcedure(context, dictionary[indexCount][10], data_RTC.LevelSignalU3Channel2, data_RTC.DateTimes);
-                    GetSqlProcedure(context, dictionary[indexCount][11], data_RTC.Instraction, data_RTC.DateTimes);
+                    GetSqlProcedure(context, dictionary[indexCount][11], data_RTC.ErrorConection, data_RTC.DateTimes);
                     GetSqlProcedure(context, dictionary[indexCount][12], data_RTC.ErrorChannel1, data_RTC.DateTimes);
                     GetSqlProcedure(context, dictionary[indexCount][13], data_RTC.ErrorChannel2, data_RTC.DateTimes);
                     GetSqlProcedure(context, dictionary[indexCount][14], data_RTC.ErrorSystem, data_RTC.DateTimes);
@@ -766,7 +777,7 @@ namespace DriverSNT2_L
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"Инструкция:\t\t");
             Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"{data_RTC.Instraction}");
+            Console.WriteLine($"{data_RTC.ErrorConection}");
             #endregion
 
             #region Ошибки канала №1

@@ -23,7 +23,7 @@ namespace DriverSNT2_L.DataControl
         private string? _levelSignalU1Channel2;          //Уровень сингнала U1 - Канала №2.          
         private string? _levelSignalU2Channel2;          //Уровень сингнала U2 - Канала №2.          
         private string? _levelSignalU3Channel2;          //Уровень сингнала U3 - Канала №2.
-        private string? _instraction;                    //Инструкция.
+        private string? _errorConection;                 //Ошибка связи со счетчиком.
         private string? _errorChannel1;                  //Ошибки канала №1.
         private string? _errorChannel2;                  //Ошибки канала №2.
         private string? _errorSystem;                    //Ошибки системы.
@@ -144,10 +144,10 @@ namespace DriverSNT2_L.DataControl
             set => _levelSignalU3Channel2 = value;
         }
         [MaxLength(20)]
-        public string? Instraction
+        public string? ErrorConection
         {
-            get => _instraction;
-            set => _instraction = value;
+            get => _errorConection;
+            set => _errorConection = value;
         }
         [MaxLength(20)]
         public string? ErrorChannel1
