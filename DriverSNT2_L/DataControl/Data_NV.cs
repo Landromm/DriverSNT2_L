@@ -220,13 +220,13 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
+                    //strBuilder.Append(",");
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
                     strBuilder.Append(tempStr[6]);
@@ -303,13 +303,13 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
+                    //strBuilder.Append(",");
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
                     strBuilder.Append(tempStr[6]);
@@ -328,15 +328,15 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
+                    strBuilder.Append(",");
                     strBuilder.Append(tempStr[6]);
                     strBuilder.Append(tempStr[7]);
                     _flowVolume = strBuilder.ToString();
@@ -365,15 +365,15 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
+                    strBuilder.Append(",");
                     strBuilder.Append(tempStr[6]);
                     strBuilder.Append(tempStr[7]);
                     _flowMass = strBuilder.ToString();
@@ -634,13 +634,13 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
+                    //strBuilder.Append(",");
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
                     strBuilder.Append(tempStr[6]);
@@ -717,15 +717,15 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
+                    strBuilder.Append(",");
                     strBuilder.Append(tempStr[6]);
                     strBuilder.Append(tempStr[7]);
                     _differenceTime_ch2 = strBuilder.ToString();
@@ -742,15 +742,15 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[2]);
-                    strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(tempStr[3]);                    
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
+                    strBuilder.Append(",");
                     strBuilder.Append(tempStr[6]);
                     strBuilder.Append(tempStr[7]);
                     _flowVolume_ch2 = strBuilder.ToString();
@@ -779,13 +779,13 @@ namespace DriverSNT2_L.DataControl
                 StringBuilder strBuilder = new StringBuilder();
                 if (tempStr != null)
                 {
-                    strBuilder.Append('(');
+                    //strBuilder.Append('(');
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
-                    strBuilder.Append(')');
+                    //strBuilder.Append(')');
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
-                    strBuilder.Append(",");
+                    //strBuilder.Append(",");
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
                     strBuilder.Append(tempStr[6]);
