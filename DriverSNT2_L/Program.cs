@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Configuration;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DriverSNT2_L
 {
@@ -40,6 +41,7 @@ namespace DriverSNT2_L
         {
             
             InitializationDB(sendMsg.CountNumberCounter);
+
             #region Цикл опроса счетчика.
             for (int i = 0; i < sendMsg.CountNumberCounter; i++)
             {
@@ -609,87 +611,96 @@ namespace DriverSNT2_L
         // Метод инициализации основных значений и БД.
         static private void InitializationDB(int countNumberCounter)
         {
-            using (FileStream fs = new FileStream(@"Resources\\db_List_Data.json", FileMode.OpenOrCreate))
+            try
             {
-                projectObject = JsonSerializer.Deserialize<ProjectObject>(fs);
+                using (FileStream fs = new FileStream(@"Resources\\db_List_Data.json", FileMode.OpenOrCreate))
+                {
+                    projectObject = JsonSerializer.Deserialize<ProjectObject>(fs);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Этап 1 - Ошибка чтения json-файла.");
+                logWriter.WriteError($"{ex}");
+                Console.ReadKey();
             }
 
-            using (var context = new DataContext())
+            try
             {
-                #region Пример инициализации объекта "projectObject".
-                //var projectObject = new ProjectObject()
-                //{
-                //    NameObject = "РК Харьковская",
-                //    Counters = new List<Counter>
-                //    {
-                //        new Counter()
-                //        {
-                //            CounterId = "СНТ-2 №1",
-                //            NameCounter = "СНТ №1 Магистраль 22",
-                //            ListValues = new List<ListValue>
-                //            {
-                //                new ListValue()
-                //                {
-                //                    Hash = 10001,
-                //                    Type = "string",
-                //                    Value = "1102",
-                //                    Description = "Тест коммент.",
-                //                    Csd_Changed = false,
-                //                    Has_History = true
-                //                }
-                //            }
-                //        },
-                //        new Counter()
-                //        {
-                //            CounterId = "СНТ-2 №2",
-                //            NameCounter = "СНТ №1 Магистраль 55",
-                //            ListValues = new List<ListValue>
-                //            {
-                //                new ListValue()
-                //                {
-                //                    Hash = 22001,
-                //                    Type = "int",
-                //                    Value = "11",
-                //                    DateTimeUpdate = DateTime.Now,
-                //                    Csd_Changed = false,
-                //                    Has_History = false
-                //                }
-                //            }
-                //        }
-                //    }
-                //};
-                #endregion
-                var checkCreated = context.Database.EnsureCreated();
-
-                if (checkCreated)
+                using (var context = new DataContext())
                 {
-                    context.Database.ExecuteSqlRaw("-- =============================================\r\n-- Author:\t\t<Радкевич Игорь>\r\n-- Create date: <05.05.2023>\r\n-- Description:\t<Процедура обновления данных в оперативной таблице,\r\n-- и запись этих данных в таблицу истории.>\r\n-- =============================================\r\nCREATE PROCEDURE [dbo].[update_cell] \r\n\r\n\t@cell_id_P int,\r\n\t@cell_value_P varchar(50),\r\n\t@cell_date_P datetime,\r\n\t@cell_out int output\r\n\t\r\nAS\r\n\r\n\tSET NOCOUNT ON;\r\n\tSET DATEFORMAT ymd;\r\n\r\n\tDECLARE @datetime_D datetime\r\n\tDECLARE @value_D VARCHAR(255)\r\n\tDECLARE @hasHistory_D bit\r\n\tDECLARE @idHash_D int\r\n\tDECLARE @changed_D bit\r\n\r\n\t--Выборка конкретной щаписи оп ID.\r\n\tSELECT TOP 1 @datetime_D = DateTimeUpdate, @value_D = Value, @hasHistory_D = Has_History, @idHash_D = Hash, @changed_D = Csd_Changed\r\n\tFROM ListValues\r\n\tWHERE ListValueId = @cell_id_P;\r\n\r\n\t--Обновление значение\r\n\tif @cell_value_P < > @value_D\r\n\t\tBEGIN\r\n\t\t\tUPDATE ListValues\r\n\t\t\tSET Value = @cell_value_P, DateTimeUpdate = @cell_date_P, Csd_Changed = 1\r\n\t\t\tWHERE Hash = @idHash_D;\t\t\t\r\n\t\tEND\r\n\telse\r\n\t\tBEGIN\r\n\t\t\tUPDATE ListValues\r\n\t\t\tSET Value = @cell_value_P, DateTimeUpdate = @cell_date_P, Csd_Changed = 0\r\n\t\t\tWHERE Hash = @idHash_D;\r\n\t\tEND\r\n\t\t\r\n\t--Запись в архивную таблицу\r\n\tif ((@hasHistory_D > 0) AND (@changed_D = 1))\r\n\t\tBEGIN\r\n\t\t\tINSERT INTO History (HashId, Value, DateTime)\r\n\t\t\tVALUES (@idHash_D, @cell_value_P, @cell_date_P)\r\n\t\tEND\r\n\r\n\t--Возврат значения \"1\" - процедура полностью выполнена.\r\n\tSET @cell_out = 1\r\n");
-                    if (projectObject == null)
-                        Console.WriteLine("Объект десириализации пуст!");
+                    #region Пример инициализации объекта "projectObject".
+                    //var projectObject = new ProjectObject()
+                    //{
+                    //    NameObject = "РК Харьковская",
+                    //    Counters = new List<Counter>
+                    //    {
+                    //        new Counter()
+                    //        {
+                    //            CounterId = "СНТ-2 №1",
+                    //            NameCounter = "СНТ №1 Магистраль 22",
+                    //            ListValues = new List<ListValue>
+                    //            {
+                    //                new ListValue()
+                    //                {
+                    //                    Hash = 10001,
+                    //                    Type = "string",
+                    //                    Value = "1102",
+                    //                    Description = "Тест коммент.",
+                    //                    Csd_Changed = false,
+                    //                    Has_History = true
+                    //                }
+                    //            }
+                    //        },
+                    //        new Counter()
+                    //        {
+                    //            CounterId = "СНТ-2 №2",
+                    //            NameCounter = "СНТ №1 Магистраль 55",
+                    //            ListValues = new List<ListValue>
+                    //            {
+                    //                new ListValue()
+                    //                {
+                    //                    Hash = 22001,
+                    //                    Type = "int",
+                    //                    Value = "11",
+                    //                    DateTimeUpdate = DateTime.Now,
+                    //                    Csd_Changed = false,
+                    //                    Has_History = false
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //};
+                    #endregion
+                    var checkCreated = context.Database.EnsureCreated();
+
+                    if (checkCreated)
+                    {
+                        context.Database.ExecuteSqlRaw("-- =============================================\r\n-- Author:\t\t<Радкевич Игорь>\r\n-- Create date: <05.05.2023>\r\n-- Description:\t<Процедура обновления данных в оперативной таблице,\r\n-- и запись этих данных в таблицу истории.>\r\n-- =============================================\r\nCREATE PROCEDURE [dbo].[update_cell] \r\n\r\n\t@cell_id_P int,\r\n\t@cell_value_P varchar(50),\r\n\t@cell_date_P datetime,\r\n\t@cell_out int output\r\n\t\r\nAS\r\n\r\n\tSET NOCOUNT ON;\r\n\tSET DATEFORMAT ymd;\r\n\r\n\tDECLARE @datetime_D datetime\r\n\tDECLARE @value_D VARCHAR(255)\r\n\tDECLARE @hasHistory_D bit\r\n\tDECLARE @idHash_D int\r\n\tDECLARE @changed_D bit\r\n\r\n\t--Выборка конкретной щаписи оп ID.\r\n\tSELECT TOP 1 @datetime_D = DateTimeUpdate, @value_D = Value, @hasHistory_D = Has_History, @idHash_D = Hash, @changed_D = Csd_Changed\r\n\tFROM ListValues\r\n\tWHERE ListValueId = @cell_id_P;\r\n\r\n\t--Обновление значение\r\n\tif @cell_value_P < > @value_D\r\n\t\tBEGIN\r\n\t\t\tUPDATE ListValues\r\n\t\t\tSET Value = @cell_value_P, DateTimeUpdate = @cell_date_P, Csd_Changed = 1\r\n\t\t\tWHERE Hash = @idHash_D;\t\t\t\r\n\t\tEND\r\n\telse\r\n\t\tBEGIN\r\n\t\t\tUPDATE ListValues\r\n\t\t\tSET Value = @cell_value_P, DateTimeUpdate = @cell_date_P, Csd_Changed = 0\r\n\t\t\tWHERE Hash = @idHash_D;\r\n\t\tEND\r\n\t\t\r\n\t--Запись в архивную таблицу\r\n\tif ((@hasHistory_D > 0) AND (@changed_D = 1))\r\n\t\tBEGIN\r\n\t\t\tINSERT INTO History (HashId, Value, DateTime)\r\n\t\t\tVALUES (@idHash_D, @cell_value_P, @cell_date_P)\r\n\t\tEND\r\n\r\n\t--Возврат значения \"1\" - процедура полностью выполнена.\r\n\tSET @cell_out = 1\r\n");
+                        if (projectObject == null)
+                            Console.WriteLine("Объект десириализации пуст!");
+                        else
+                            context.ProjectObjects.Add(projectObject);
+                    }
                     else
-                        context.ProjectObjects.Add(projectObject);
-                }
-                else
-                    Console.WriteLine("База данных уже существует!"); //Технический указатель. Требует удаления перед релизом.
+                        Console.WriteLine("База данных уже существует!"); //Технический указатель. Требует удаления перед релизом.
 
-                context.SaveChanges();
+                    context.SaveChanges();
 
-                try
-                {
-                    for(int i = 1; i <= countNumberCounter; i++)
+                    for (int i = 1; i <= countNumberCounter; i++)
                     {
                         dictionary[i] = context.ListValues
                             .Where(countId => countId.CounterId == $"СНТ-2 №{i}")
                             .Select(id => id.ListValueId).ToList();
                     }
-                }
-                catch (Exception ex)
-                {
-                    string error = $"Ошибка инициализации словаря Id-шников.\n" + ex;
-                    Console.WriteLine(error);
-                    logWriter.WriteError(error);
-                }
-            };
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Этап 2 - Ошибка на этапе подключения к БД.");
+                logWriter.WriteError($"{ex}");
+                Console.ReadKey();
+            }
         }
 
         #region Методы фоматированного вывода данных в консоль. 
