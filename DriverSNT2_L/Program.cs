@@ -309,6 +309,10 @@ namespace DriverSNT2_L
             }
             catch (Exception ex)
             {
+                using (var context = new DataContext())
+                {
+                    GetSqlProcedure(context, dictionary[indexCount][11], "1", DateTime.Now);
+                }
                 if (errorCount >= limitErrorCom)
                 {
                     errorCount = 0;
@@ -323,10 +327,6 @@ namespace DriverSNT2_L
                     Console.WriteLine(error);
                     logWriter.WriteError($"Не получены данные со счетчика!\t" + error);
 
-                    using (var context = new DataContext())
-                    {
-                        GetSqlProcedure(context, dictionary[indexCount][11], "1", DateTime.Now);
-                    }
                 }
             }            
         }
@@ -404,6 +404,10 @@ namespace DriverSNT2_L
             }
             catch (Exception ex)
             {
+                using (var context = new DataContext())
+                {
+                    GetSqlProcedure(context, dictionary[indexCount][11], "1", DateTime.Now);
+                }
                 if (errorCount >= limitErrorCom)
                 {
                     errorCount = 0;
@@ -418,10 +422,6 @@ namespace DriverSNT2_L
                     Console.WriteLine(error);
                     logWriter.WriteError($"Не получены данные со счетчика!\t\n {error}" + ex);
                     
-                    using (var context = new DataContext())
-                    {
-                        GetSqlProcedure(context, dictionary[indexCount][11], "1", DateTime.Now);
-                    }
                 }
             }            
         }

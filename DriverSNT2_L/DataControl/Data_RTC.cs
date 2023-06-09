@@ -180,7 +180,7 @@ namespace DriverSNT2_L.DataControl
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(".");
                     strBuilder.Append(tempStr[3]);
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
@@ -201,7 +201,7 @@ namespace DriverSNT2_L.DataControl
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(".");
                     strBuilder.Append(tempStr[3]);
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
@@ -222,7 +222,7 @@ namespace DriverSNT2_L.DataControl
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(".");
                     strBuilder.Append(tempStr[3]);
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
@@ -243,7 +243,7 @@ namespace DriverSNT2_L.DataControl
                     strBuilder.Append(tempStr[0]);
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(".");
                     strBuilder.Append(tempStr[3]);
                     strBuilder.Append(tempStr[4]);
                     strBuilder.Append(tempStr[5]);
@@ -293,7 +293,7 @@ namespace DriverSNT2_L.DataControl
                 if (tempStr != null)
                 {
                     strBuilder.Append(tempStr[0]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(".");
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
@@ -313,7 +313,7 @@ namespace DriverSNT2_L.DataControl
                 if (tempStr != null)
                 {
                     strBuilder.Append(tempStr[1]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(".");
                     strBuilder.Append(tempStr[1]);
                     strBuilder.Append(tempStr[2]);
                     strBuilder.Append(tempStr[3]);
@@ -381,7 +381,7 @@ namespace DriverSNT2_L.DataControl
                 if (tempStr != null)
                 {
                     strBuilder.Append(tempStr[0]);
-                    strBuilder.Append(",");
+                    strBuilder.Append(".");
                     strBuilder.Append(tempStr[1]);
                     _maxSensorsPressure = strBuilder.ToString();
                 }

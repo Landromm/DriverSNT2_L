@@ -5,7 +5,31 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>2.0.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
+    <PackageIcon>database_icon.png</PackageIcon>
+    <PackageReleaseNotes>Изменен разделить с "," на ".".</PackageReleaseNotes>
+    <ApplicationIcon>database_icon.ico</ApplicationIcon>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <SignAssembly>True</SignAssembly>
+    <Title>Driver SNT</Title>
+    <Authors>Rdkevich Igor, Kudin Sergey, Gorodetski Nikolay</Authors>
+    <Company>РУП "Минскэнерго" филиал "Минские тепловые сети"</Company>
+    <Description>Данное приложение считывает данные со счетчика СНТ-2 и записывает их базу данных MSSQL</Description>
+    <PackAsTool>False</PackAsTool>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="database_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\database_icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />

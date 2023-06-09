@@ -1,10 +1,10 @@
 ﻿{
 	"ProjectObjectId": 0,
-	"NameObject": "РК Харьковская",
+	"NameObject": "РК Шабаны",
 	"Counters": [
 		{
 			"CounterId": "СНТ-2 №1",
-			"NameCounter": "СНТ-2 Магистраль №10",
+			"NameCounter": "СНТ-2 Подпитка",
 			"ListValues": [
 				{
 					"CounterId": null,
@@ -991,7 +991,7 @@
 		},
 		{
 			"CounterId": "СНТ-2 №2",
-			"NameCounter": "СНТ-2 Магистраль №20",
+			"NameCounter": "СНТ-2 Магистраль №60",
 			"ListValues": [
 				{
 					"CounterId": null,
@@ -1978,7 +1978,7 @@
 		},
 		{
 			"CounterId": "СНТ-2 №3",
-			"NameCounter": "СНТ-2 Магистраль №30",
+			"NameCounter": "СНТ-2 Магистраль №54",
 			"ListValues": [
 				{
 					"CounterId": null,
@@ -2965,7 +2965,7 @@
 		},
 		{
 			"CounterId": "СНТ-2 №4",
-			"NameCounter": "СНТ-2 Магистраль №40",
+			"NameCounter": "СНТ-2 Отвод на КПД",
 			"ListValues": [
 				{
 					"CounterId": null,
@@ -3952,7 +3952,7 @@
 		},
 		{
 			"CounterId": "СНТ-2 №5",
-			"NameCounter": "СНТ-2 Магистраль №50",
+			"NameCounter": "СНТ-2 Магистраль №0",
 			"ListValues": [
 				{
 					"CounterId": null,
@@ -4939,7 +4939,7 @@
 		},
 		{
 			"CounterId": "СНТ-2 №6",
-			"NameCounter": "СНТ-2 Магистраль №60",
+			"NameCounter": "СНТ-2 Магистраль №1",
 			"ListValues": [
 				{
 					"CounterId": null,
